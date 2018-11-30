@@ -1,9 +1,9 @@
-
 module fadd(
     input wire [31:0] x1,
     input wire [31:0] x2,
     output reg [31:0] y,
-    input wire clk);
+    input wire clk,
+    input wire rstn);
 
     reg sy_reg,e2a_zero_reg;
     reg [7:0] e1a_reg,eya_reg;
@@ -104,6 +104,16 @@ module fadd(
         // stage 2
         y <= {sy_reg,ey,my};
 
+    end
+
+    always @(negedge ~rstn) begin
+        sy_reg <= 0;
+        e2a_zero_reg <= 0;
+        e1a_reg <= 0;
+        eya_reg <= 0;
+        m1a_reg <= 0;
+        mya_reg <= 0;
+        y <= 0;
     end
 
 endmodule

@@ -2,7 +2,8 @@ module fmul(
     input wire [31:0] x1,
     input wire [31:0] x2,
     output reg [31:0] y,
-    input wire clk);
+    input wire clk,
+    input wire rstn);
 
     wire s1,s2,sy;
     wire [7:0] e1,e2,ey;
@@ -31,12 +32,13 @@ module fmul(
     assign ey1 = (eya0 > 9'd126) ? eya0 - 9'd126: 0;
 
     assign ey = (a) ? ey1: ey0;
-	
-    wire [31:0] y_wire;	
-    assign y_wire = {sy,ey,my};
 
     always @(posedge clk) begin
-        y <= y_wire;
+        y <= {sy,ey,my};
+    end
+
+    always @(negedge rstn) begin
+        y <= 0;
     end
 
 endmodule

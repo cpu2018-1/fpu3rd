@@ -1,7 +1,8 @@
 module fsqrt(
     input wire [31:0] x,
     output reg [31:0] y,
-    input wire clk);
+    input wire clk,
+    input wire rstn);
 
     function [38:0] TDATA (
 	input [9:0] INDEX
@@ -1091,6 +1092,17 @@ module fsqrt(
         mx_reg2 <= mx_reg1;
         // stage3
         y <= {1'b0,ey_reg2,my};
+    end
+
+    always @(negedge rstn) begin
+        ey_reg1 <= 0;
+        ey_reg2 <= 0;
+        thalf_x0_reg <= 0;
+        mx_reg1 <= 0;
+        mx_reg2 <= 0;
+        mr_reg <= 0;
+        half_ax03_reg <= 0;
+        y <= 0;
     end
 
 endmodule

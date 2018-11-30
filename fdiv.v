@@ -1,9 +1,9 @@
-
 module fdiv(
     input wire [31:0] x1,
     input wire [31:0] x2,
     output reg [31:0] y,
-    input wire clk);
+    input wire clk,
+    input wire rstn);
 
     function [34:0] TDATA (
 	input [9:0] MAL
@@ -1121,6 +1121,21 @@ module fdiv(
         // stage3
         y <= {sy_reg2,ey,my};
 
+    end
+
+    always @(negedge rstn) begin
+       sy_reg1 <= 0;
+       sy_reg2 <= 0; 
+       ey0_reg1 <= 0;
+       ey1_reg1 <= 0;
+       ey0_reg2 <= 0;
+       ey1_reg2 <= 0;
+       mx0_reg <= 0;
+       mx_reg1 <= 0;
+       mx_reg2 <= 0;
+       mix2_reg <= 0;
+       max02a_reg <= 0;
+       y <= 0;
     end
 
 endmodule

@@ -1,7 +1,8 @@
 module ftoi(
     input wire [31:0] x,
     output reg [31:0] y,
-    input wire clk);
+    input wire clk,
+    input wire rstn);
 
     wire sx;
     wire [7:0] ex;
@@ -32,6 +33,10 @@ module ftoi(
 
     always @(posedge clk) begin
         y <= y_wire;
+    end
+
+    always @(negedge rstn) begin
+        y <= 0;
     end
 
 endmodule
