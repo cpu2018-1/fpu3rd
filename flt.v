@@ -1,9 +1,7 @@
 module flt(
     input wire [31:0] x1,
     input wire [31:0] x2,
-    output reg [31:0] y,
-    input wire clk,
-    input wire rstn);
+    output wire [31:0] y);
 
     wire s1,s2;
     wire [7:0] e1,e2;
@@ -27,12 +25,6 @@ module flt(
     assign m2a = (e2 == 0) ? 0: m2;
     assign m2b = (s2a) ? m2a: ~m2a;
 
-    always @(posedge clk) begin
-        y = ({s1a,e1a,m1b} < {s2a,e2a,m2b});
-    end
-
-    always @(negedge rstn) begin
-        y = 0;
-    end
+    assign y = ({s1a,e1a,m1b} < {s2a,e2a,m2b});
 
 endmodule

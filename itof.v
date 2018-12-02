@@ -1,9 +1,6 @@
 module itof(
     input wire [31:0] x,
-    output reg [31:0] y,
-    input wire clk,
-    input wire rstn);
-
+    output wire [31:0] y);
     
     function [5:0] SE (
 	input [30:0] MXB
@@ -66,12 +63,6 @@ module itof(
     assign ey = (x == {1'b1,31'b0}) ? 8'b10011110:
 		((se == 5'd31) ? 0: eya - se);
 
-    always @(posedge clk) begin
-        y <= {sy,ey,my};
-    end
-
-    always @(negedge rstn) begin
-        y <= 0;
-    end
+    assign y = {sy,ey,my};
 
 endmodule

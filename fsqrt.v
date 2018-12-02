@@ -1,6 +1,6 @@
 module fsqrt(
     input wire [31:0] x,
-    output reg [31:0] y,
+    output wire [31:0] y,
     input wire clk,
     input wire rstn);
 
@@ -1080,6 +1080,8 @@ module fsqrt(
     wire [22:0] my;
     assign my = (mya[47:47]) ? mya[46:24]: mya[45:23];
 
+    assign y = {1'b0,ey_reg2,my};
+
     always @(posedge clk) begin
         // stage1
         ey_reg1 <= ey;
@@ -1090,8 +1092,6 @@ module fsqrt(
         ey_reg2 <= ey_reg1;
         mr_reg <= mr;
         mx_reg2 <= mx_reg1;
-        // stage3
-        y <= {1'b0,ey_reg2,my};
     end
 
     always @(negedge rstn) begin
@@ -1102,7 +1102,6 @@ module fsqrt(
         mx_reg2 <= 0;
         mr_reg <= 0;
         half_ax03_reg <= 0;
-        y <= 0;
     end
 
 endmodule

@@ -1,7 +1,7 @@
 module fadd(
     input wire [31:0] x1,
     input wire [31:0] x2,
-    output reg [31:0] y,
+    output wire [31:0] y,
     input wire clk,
     input wire rstn);
 
@@ -92,6 +92,8 @@ module fadd(
     assign myb = mya_reg << seb;
     assign my = (e2a_zero_reg) ? m1a_reg: myb[23:1];
 
+    assign y = {sy_reg,ey,my};
+
     always @(posedge clk) begin
         // stage 1
         sy_reg <= s1a;
@@ -100,10 +102,6 @@ module fadd(
         eya_reg <= e1a + 1;
         m1a_reg <= m1a;
         mya_reg <= mya;
-        
-        // stage 2
-        y <= {sy_reg,ey,my};
-
     end
 
     always @(negedge ~rstn) begin
@@ -113,7 +111,6 @@ module fadd(
         eya_reg <= 0;
         m1a_reg <= 0;
         mya_reg <= 0;
-        y <= 0;
     end
 
 endmodule

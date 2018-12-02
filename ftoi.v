@@ -1,8 +1,6 @@
 module ftoi(
     input wire [31:0] x,
-    output reg [31:0] y,
-    input wire clk,
-    input wire rstn);
+    output wire [31:0] y);
 
     wire sx;
     wire [7:0] ex;
@@ -28,15 +26,6 @@ module ftoi(
     assign sy = sx;
     assign my = (sy) ? (~myc) + 1: myc;
 
-    wire [31:0] y_wire;
-    assign y_wire = (my == 0) ? 0: {sy,my};
-
-    always @(posedge clk) begin
-        y <= y_wire;
-    end
-
-    always @(negedge rstn) begin
-        y <= 0;
-    end
+    assign y = (my == 0) ? 0: {sy,my};
 
 endmodule

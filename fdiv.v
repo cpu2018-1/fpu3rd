@@ -1,7 +1,7 @@
 module fdiv(
     input wire [31:0] x1,
     input wire [31:0] x2,
-    output reg [31:0] y,
+    output wire [31:0] y,
     input wire clk,
     input wire rstn);
 
@@ -1102,6 +1102,8 @@ module fdiv(
     assign my = (a) ? mya[46:24]: mya[45:23];
     assign ey = (a) ? ey1_reg2: ey0_reg2;
 
+    assign y = {sy_reg2,ey,my};
+
     always @(posedge clk) begin
         // stage1
         sy_reg1 <= sy;
@@ -1118,9 +1120,6 @@ module fdiv(
         ey0_reg2 <= ey0_reg1;
         ey1_reg2 <= ey1_reg1;
 
-        // stage3
-        y <= {sy_reg2,ey,my};
-
     end
 
     always @(negedge rstn) begin
@@ -1135,7 +1134,6 @@ module fdiv(
        mx_reg2 <= 0;
        mix2_reg <= 0;
        max02a_reg <= 0;
-       y <= 0;
     end
 
 endmodule
