@@ -77,7 +77,7 @@ module fpu(
     reg [5:0]  reg_addr1,reg_addr2;
     reg [31:0] dd_val1,dd_val2;
     
-    fadd u1 (ds_val,{ctrl[1],dt_val[30:0]},fadd_y,clk,rstn);
+    fadd u1 (ds_val,{ctrl[1] ^ dt_val[31],dt_val[30:0]},fadd_y,clk,rstn);
     fmul u2 (ds_val,dt_val,fmul_y,clk,rstn);
     fdiv u3 (ds_val,dt_val,fdiv_y,clk,rstn);
     fsqrt u4 (ds_val,fsqrt_y,clk,rstn);
