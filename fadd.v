@@ -13,66 +13,6 @@ module fadd(
     assign e2 = x2[30:23];
     assign mx2 = x2[22:0];
 
-    // path0 |e1 - e2| = 0 かつ 異符号
-    wire [23:0] m0_1;
-    wire [22:0] m0_2;
-    assign m0_1 = mx1 - mx2;
-    assign m0_2 = mx2 - mx1;
-
-    wire [22:0] m0;
-    assign m0 = (m0_1[23]) ? m0_2: m0_1[22:0];
-
-    function [7:0] SE0 (
-	input [22:0] M0
-    );
-    begin
-	casex(M0)
-        23'b1xxxxxxxxxxxxxxxxxxxxxx: SE0 = 8'd1;
-        23'b01xxxxxxxxxxxxxxxxxxxxx: SE0 = 8'd2;
-        23'b001xxxxxxxxxxxxxxxxxxxx: SE0 = 8'd3;
-        23'b0001xxxxxxxxxxxxxxxxxxx: SE0 = 8'd4;
-        23'b00001xxxxxxxxxxxxxxxxxx: SE0 = 8'd5;
-        23'b000001xxxxxxxxxxxxxxxxx: SE0 = 8'd6;
-        23'b0000001xxxxxxxxxxxxxxxx: SE0 = 8'd7;
-        23'b00000001xxxxxxxxxxxxxxx: SE0 = 8'd8;
-        23'b000000001xxxxxxxxxxxxxx: SE0 = 8'd9;
-        23'b0000000001xxxxxxxxxxxxx: SE0 = 8'd10;
-        23'b00000000001xxxxxxxxxxxx: SE0 = 8'd11;
-        23'b000000000001xxxxxxxxxxx: SE0 = 8'd12;
-        23'b0000000000001xxxxxxxxxx: SE0 = 8'd13;
-        23'b00000000000001xxxxxxxxx: SE0 = 8'd14;
-        23'b000000000000001xxxxxxxx: SE0 = 8'd15;
-        23'b0000000000000001xxxxxxx: SE0 = 8'd16;
-        23'b00000000000000001xxxxxx: SE0 = 8'd17;
-        23'b000000000000000001xxxxx: SE0 = 8'd18;
-        23'b0000000000000000001xxxx: SE0 = 8'd19;
-        23'b00000000000000000001xxx: SE0 = 8'd20;
-        23'b000000000000000000001xx: SE0 = 8'd21;
-        23'b0000000000000000000001x: SE0 = 8'd22;
-        23'b00000000000000000000001: SE0 = 8'd23;
-        23'b00000000000000000000000: SE0 = 8'd255;
-	endcase
-    end
-    endfunction
-
-    wire [7:0] se0;
-    assign se0 = SE0(m0);
-
-    wire [23:0] mya0;
-    assign mya0 = {1'b0,m0} << se0;
-
-    wire [22:0] my0;
-    assign my0 = mya0[22:0];
-
-    wire [8:0] ey0a;
-    assign ey0a = e1 - se0;
-
-    wire [7:0] ey0;
-    assign ey0 = (ey0a[8]) ? 0: ey0a[7:0];
-
-    wire [30:0] abs0;
-    assign abs0 = {ey0,my0};
-
     // path1,2に使う
     wire [8:0] sm1;
     wire [7:0] sm2;
@@ -81,13 +21,24 @@ module fadd(
     assign sm2 = e2 - e1;
     assign sm = (sm1[8]) ? sm2: sm1[7:0];
 
-    // path1 |e1 - e2| = 1 かつ 異符号
-    wire [24:0] m1_1,m1_2;
-    assign m1_1 = {1'b1,mx1,1'b0} - {2'b01,mx2};
-    assign m1_2 = {1'b1,mx2,1'b0} - {2'b01,mx1};
+    // path1 |e1 - e2| = 0 or 1 かつ 異符号
+    wire [23:0] m1_01;
+    wire [22:0] m1_02;
+    assign m1_01 = mx1 - mx2;
+    assign m1_02 = mx2 - mx1;
+
+    wire [22:0] m1_0;
+    assign m1_0 = (m1_01[23]) ? m1_02: m1_01[22:0];
+
+    wire [24:0] m1_11,m1_12;
+    assign m1_11 = {1'b1,mx1,1'b0} - {2'b01,mx2};
+    assign m1_12 = {1'b1,mx2,1'b0} - {2'b01,mx1};
+
+    wire [24:0] m1_1;
+    assign m1_1 = (sm1[8]) ? m1_12: m1_11;
 
     wire [24:0] m1;
-    assign m1 = (sm1[8]) ? m1_2: m1_1;
+    assign m1 = (sm1[0]) ? m1_1: {1'b0,m1_0,1'b0};
 
     function [7:0] SE1 (
 	input [24:0] M1
@@ -139,13 +90,11 @@ module fadd(
     wire [7:0] ey1;
     assign ey1 = (ey1a[8]) ? 0: ey1a[7:0];
 
-    wire [30:0] abs1;
-    assign abs1 = {ey1,my1};
-
     // path2 その他
-    wire [7:0] e1a;
+    wire [7:0] e1a,e2a;
     wire [22:0] m1a,m2a;
     assign e1a = (sm1[8]) ? e2: e1;
+    assign e2a = (sm1[8]) ? e1: e2;
     assign m1a = (sm1[8]) ? mx2: mx1;
     assign m2a = (sm1[8]) ? mx1: mx2;
 
@@ -169,20 +118,19 @@ module fadd(
     wire [7:0] ey2;
     assign ey2 = (mya2[25]) ? ey2_p1: ((mya2[24]) ? e1a: ey2_m1);
 
-    wire [30:0] abs2;
-    assign abs2 = {ey2,my2};
-
     // path選択
-    // path 0 or 1
-    wire flag01;
-    assign flag01 = (sm[7:1] == 7'b0 & pm);
-
-    wire [30:0] y_abs;
-    assign y_abs = (flag01) ? ((sm[0]) ? abs1: abs0): abs2;
+    wire flag1;
+    assign flag1 = (sm[7:1] == 7'b0 & pm);
 
     wire sy;
     assign sy = (x1[30:0] > x2[30:0]) ? x1[31]: x2[31];
 
-    assign y = {sy,y_abs};
+    wire [7:0] ey;
+    assign ey = (e2a == 8'b0) ? e1a: ((flag1) ? ey1: ey2);
+
+    wire [22:0] my;
+    assign my = (flag1) ? my1: my2;
+
+    assign y = {sy,ey,my};
 
 endmodule
