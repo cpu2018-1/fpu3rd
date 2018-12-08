@@ -1036,9 +1036,7 @@ module fsqrt(
     endfunction
 
     wire [7:0] ex;
-    wire [22:0] mx;
     assign ex = x[30:23];
-    assign mx = x[22:0];
     
     wire [9:0] key;
     wire [13:0] h;

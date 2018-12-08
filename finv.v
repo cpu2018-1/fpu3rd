@@ -1038,10 +1038,8 @@ module finv(
 
     wire sx;
     wire [7:0] ex;
-    wire [22:0] mx;
     assign sx = x[31];
     assign ex = x[30:23];
-    assign mx = x[22:0];
 
     // pm = 1 のとき - 0のとき +
     wire [9:0] ml;

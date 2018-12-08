@@ -18,11 +18,9 @@ module ftoi(
     wire [30:0] myb;
     assign myb = mya >> se;
 
-    wire sy;
     wire [30:0] my;
-    assign sy = sx;
     assign my = (sy) ? (~myb) + 1: myb;
 
-    assign y = (my == 0) ? 0: {sy,my};
+    assign y = (my == 23'b0) ? 32'b0: {sx,my};
 
 endmodule
