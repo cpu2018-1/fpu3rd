@@ -1073,7 +1073,7 @@ module finv(
     assign eya = 9'd253 - ex;
 
     wire [7:0] ey;
-    assign ey = (eya[8]) ? 0: eya[7:0];
+    assign ey = (eya[8]) ? 8'b0: eya[7:0];
 
     assign y = {sx,ey,my};
 

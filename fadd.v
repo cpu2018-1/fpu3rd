@@ -88,7 +88,7 @@ module fadd(
     assign ey1a = (sm1[8]) ? e2 - se1: e1 - se1;
 
     wire [7:0] ey1;
-    assign ey1 = (ey1a[8]) ? 0: ey1a[7:0];
+    assign ey1 = (ey1a[8]) ? 8'b0: ey1a[7:0];
 
     // path2 その他
     wire [7:0] e1a,e2a;
@@ -112,8 +112,8 @@ module fadd(
     assign my2 = (mya2[25]) ? mya2[24:2]:((mya2[24]) ? mya2[23:1]: mya2[22:0]);
 
     wire [7:0] ey2_m1,ey2_p1;
-    assign ey2_p1 = e1a + 1;
-    assign ey2_m1 = (e1a > 1) ? e1a - 1: 0;
+    assign ey2_p1 = e1a + 8'b1;
+    assign ey2_m1 = (e1a > 8'b1) ? e1a - 8'b1: 8'b0;
 
     wire [7:0] ey2;
     assign ey2 = (mya2[25]) ? ey2_p1: ((mya2[24]) ? e1a: ey2_m1);
