@@ -1066,14 +1066,16 @@ module finv(
     wire [35:0] my_extend2;
     assign my_extend2 = {a0_inv,13'b0} + notmr * a02_inv;
 
-    wire [22:0] my;
-    assign my = (pm) ? my_extend1[35:13]: my_extend2[35:13];
+    wire [22:0] mya;
+    assign mya = (pm) ? my_extend1[35:13]: my_extend2[35:13];
 
     wire [8:0] eya;
     assign eya = 9'd253 - ex;
 
     wire [7:0] ey;
     assign ey = (eya[8]) ? 8'b0: eya[7:0];
+
+    assign my = (eya[8]) ? 8'b0: mya;
 
     assign y = {sx,ey,my};
 

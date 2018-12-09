@@ -1051,14 +1051,17 @@ module fsqrt(
     assign rtx0 = tdata[36:14];
     assign rtx0_inv = tdata[13:0];
 
+    wire check_zero;
+    assign check_zero = (x[30:0] == 31'b0);
+
     wire [7:0] ey;
-    assign ey = (ex == 8'b0) ? 8'b0: 8'd63 + ex[7:1] + ex[0] + (x[23:2] == {1'b0,{21{1'b1}}} & x[1:0] != 2'b0);
+    assign ey = (check_zero) ? 8'b0: 8'd63 + ex[7:1] + ex[0] + (x[23:2] == {1'b0,{21{1'b1}}} & x[1:0] != 2'b0);
 
     wire [36:0] my_extend;
     assign my_extend = {rtx0,14'b0} + rtx0_inv * h;
 
     wire [22:0] my;
-    assign my = my_extend[36:14];
+    assign my = (check_zero) ? 23'b0: my_extend[36:14];
 
     assign y = {1'b0,ey,my};
 

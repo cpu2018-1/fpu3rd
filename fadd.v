@@ -84,11 +84,8 @@ module fadd(
     wire [22:0] my1;
     assign my1 = mya1[23:1];
     
-    wire [8:0] ey1a;
-    assign ey1a = (sm1[8]) ? e2 - se1: e1 - se1;
-
-    wire [7:0] ey1;
-    assign ey1 = (ey1a[8]) ? 8'b0: ey1a[7:0];
+    wire [8:0] ey1;
+    assign ey1 = (sm1[8]) ? e2 - se1: e1 - se1;
 
     // path2 その他
     wire [7:0] e1a,e2a;
@@ -111,11 +108,11 @@ module fadd(
     wire [22:0] my2;
     assign my2 = (mya2[25]) ? mya2[24:2]:((mya2[24]) ? mya2[23:1]: mya2[22:0]);
 
-    wire [7:0] ey2_m1,ey2_p1;
+    wire [8:0] ey2_m1,ey2_p1;
     assign ey2_p1 = e1a + 8'b1;
-    assign ey2_m1 = (e1a > 8'b1) ? e1a - 8'b1: 8'b0;
+    assign ey2_m1 = e1a - 8'b1;
 
-    wire [7:0] ey2;
+    wire [8:0] ey2;
     assign ey2 = (mya2[25]) ? ey2_p1: ((mya2[24]) ? e1a: ey2_m1);
 
     // path選択
@@ -125,11 +122,24 @@ module fadd(
     wire sy;
     assign sy = (x1[30:0] > x2[30:0]) ? x1[31]: x2[31];
 
-    wire [7:0] ey;
-    assign ey = (e2a == 8'b0) ? e1a: ((flag1) ? ey1: ey2);
+    // 片方が0の場合の処理
+    wire x1_zero,x2_zero,zero_flag;
+    wire [30:0] emy0;
+    assign x1_zero = (x1[30:0] == 31'b0);
+    assign x2_zero = (x2[30:0] == 31'b0);
+    assign zero_flag = x1_zero | x2_zero;
+    assign emy0 = (x1_zero) ? x2[30:0]: x1[30:0];
 
+    wire [8:0] eya;
+    assign eya = (zero_flag) ? {1'b0,emy0[30:23]}:((flag1) ? ey1: ey2);
+
+    wire [22:0] mya;
+    assign mya = (zero_flag) ? emy0[22:0]: ((flag1) ? my1: my2);
+
+    wire [7:0] ey;
     wire [22:0] my;
-    assign my = (flag1) ? my1: my2;
+    assign ey = (eya[8]) ? 8'b0: eya[7:0];
+    assign my = (eya[8]) ? 23'b0: mya;
 
     assign y = {sy,ey,my};
 

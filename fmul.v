@@ -17,21 +17,22 @@ module fmul(
 
     wire [47:0] mya;
     assign mya = {1'b1,m1} * {1'b1,m2};
-    assign my = (mya[47:47]) ? mya[46:24]: mya[45:23];
+
+    wire [22:0] myb;
+    assign myb = (mya[47:47]) ? mya[46:24]: mya[45:23];
 
     wire [8:0] eya0;
-    assign eya0 = (e1 == 8'b0 | e2 == 8'b0) ? 9'b0: e1 + e2;
+    assign eya0 = (x1[30:0] == 31'b0 | x2[31:0] == 31'b0) ? 9'b0: e1 + e2;
     
-    wire [9:0] ey0a,ey1a;
+    wire [9:0] ey0,ey1;
     assign ey0a = eya0 - 10'd127;
     assign ey1a = eya0 - 10'd126;
 
-    wire [7:0] ey0,ey1;
-    assign ey0 = (ey0a[9]) ? 8'b0: ey0a;
-    assign ey1 = (ey1a[9]) ? 8'b0: ey1a;
+    wire [9:0] eya;
+    assign eya = (mya[47:47]) ? ey1: ey0;
+    assign ey = (eya[9]) ? 8'b0: eya[7:0];
+    assign my = (eya[9]) ? 23'b0: myb;
 
-    assign ey = (mya[47:47]) ? ey1: ey0;
-	
     assign y = {sy,ey,my};
 
 endmodule
