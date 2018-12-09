@@ -46,38 +46,37 @@ ctrlを見てレジスタ(32bit×1個)にまとめるぐらいはできるんじ
 そういう仕様にすることに関してTAに許可をもらっている。
 
 ・feq,flt,fle
+浮動小数の扱いを少しだけ変更したため、内容もそれにあわせてやや変更されているので注意。
 最初は各々モジュールとして用意することを想定していたが、ほぼ同じ考え方でできて3つのモジュールで変数を共有できるし
 コードが短いのでわざわざモジュール化しない方がいい気がしてきた。
-e = 0のときは全て0とみなしてるのでそれを考慮する必要がある。
-レポジトリに一応残してあるflt.vは浮動小数を符号反転を駆使していい感じにソートする実装になっている。
+レポジトリに一応のこしてある比較の実装では下位31bitが0のときはゼロであることに注意して、
+浮動小数を適当にソートして比較する実装になっていて3つとも内容はほぼ同じである。
 3つの演算をまとめて
 
     wire s1,s2;
-    wire [7:0] e1,e2;
-    wire [22:0] m1,m2;
-    assign s1 = x1[31:31];
-    assign e1 = x1[30:23];
-    assign m1 = x1[22:0];
-    assign s2 = x2[31:31];
-    assign e2 = x2[30:23];
-    assign m2 = x2[22:0];
+    wire [30:0] em1,em2;
+    assign s1 = ds_val[31];
+    assign em1 = ds_val[30:0];
+    assign s2 = dt_val[31];
+    assign em2 = dt_val[30:0];
 
-    wire s1a,s2a;
-    wire [7:0] e1a,e2a;
-    wire [22:0] m1a,m2a,m1b,m2b;
-    assign s1a = (e1 == 8'b0) ? 1'b1: ~s1;
-    assign e1a = (s1a) ? e1: ~e1;
-    assign m1a = (e1 == 8'b0) ? 1'b0: m1;
-    assign m1b = (s1a) ? m1a: ~m1a;
-    assign s2a = (e2 == 8'b0) ? 1'b1: ~s2;
-    assign e2a = (s2a) ? e2: ~e2;
-    assign m2a = (e2 == 8'b0) ? 1'b0: m2;
-    assign m2b = (s2a) ? m2a: ~m2a;
+    wire s1a,s2a,em1_zero,em2_zero;
+    wire [30:0] em1a,em2a;
+    assign em1_zero = (em1 == 31'b0);
+    assign em2_zero = (em2 == 31'b0);
+    assign s1a = (em1_zero) ? 1'b1: ~s1;
+    assign em1a = (em1_zero) ? 31'b0: ((s1) ? ~em1: em1);
+    assign s2a = (em2_zero) ? 1'b1: ~s2;
+    assign em2a = (em2_zero) ? 1'b1: ((s2) ? ~em2: em2);
 
-    wire [31:0] feq_y,flt_y,fle_y;
-    assign feq_y = ({s1a,e1a,m1b} = {s2a,e2a,m2b});
-    assign flt_y = ({s1a,e1a,m1b} < {s2a,e2a,m2b});
-    assign fle_y = ({s1a,e1a,m1b} <= {s2a,e2a,m2b});
+    wire [31:0] x1a,x2a;
+    assign x1a = {s1a,em1a};
+    assign x2a = {s2a,em2a};
+
+    wire [31:0] fle_y,flt_y,feq_y;
+    assign fle_y = (x1a <= x2a);
+    assign flt_y = (x1a < x2a);
+    assign feq_y = (x1a == x2a);
 
 こんな感じで記述できると思う
 

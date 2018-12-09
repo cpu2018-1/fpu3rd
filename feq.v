@@ -7,7 +7,7 @@ module fle(
     wire [30:0] em1,em2;
     assign s1 = x1[31];
     assign em1 = x1[30:0];
-    assign s2 = x1[31];
+    assign s2 = x2[31];
     assign em2 = x2[30:0];
 
     wire s1a,s2a,em1_zero,em2_zero;
