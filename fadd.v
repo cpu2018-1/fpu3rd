@@ -123,18 +123,11 @@ module fadd(
     assign sy = (x1[30:0] > x2[30:0]) ? x1[31]: x2[31];
 
     // 片方が0の場合の処理
-    wire x1_zero,x2_zero,zero_flag;
-    wire [30:0] emy0;
-    assign x1_zero = (x1[30:0] == 31'b0);
-    assign x2_zero = (x2[30:0] == 31'b0);
-    assign zero_flag = x1_zero | x2_zero;
-    assign emy0 = (x1_zero) ? x2[30:0]: x1[30:0];
-
     wire [8:0] eya;
-    assign eya = (zero_flag) ? {1'b0,emy0[30:23]}:((flag1) ? ey1: ey2);
+    assign eya = (flag1) ? ey1: ey2;
 
     wire [22:0] mya;
-    assign mya = (zero_flag) ? emy0[22:0]: ((flag1) ? my1: my2);
+    assign mya = (flag1) ? my1: my2;
 
     wire [7:0] ey;
     wire [22:0] my;
