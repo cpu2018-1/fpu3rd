@@ -22,7 +22,7 @@ module fmul(
     assign myb = (mya[47:47]) ? mya[46:24]: mya[45:23];
 
     wire [8:0] eya0;
-    assign eya0 = (x1[30:0] == 31'b0 | x2[31:0] == 31'b0) ? 9'b0: e1 + e2;
+    assign eya0 = (x1[30:0] == 31'b0 | x2[30:0] == 31'b0) ? 9'b0: e1 + e2;
     
     wire [9:0] ey0,ey1;
     assign ey0a = eya0 - 10'd127;
