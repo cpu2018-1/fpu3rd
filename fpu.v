@@ -72,7 +72,7 @@ module fpu(
 
     fadd u1 (ds_val,{dt_val[31] ^ ctrl[1],dt_val[30:0]},fadd_y);
     fmul u3 (ds_val,dt_val,fmul_y);
-    finv u4 (ds_val,dt_val,finv_y);
+    finv u4 (ds_val,finv_y);
     fsqrt u5 (ds_val,fsqrt_y);
     ftoi u9 (ds_val,ftoi_y);
     itof u10 (ds_val,itof_y);
