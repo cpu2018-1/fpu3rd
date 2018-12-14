@@ -1,3 +1,5 @@
+`default_nettype none
+
 module finv(
     input wire [31:0] x,
     output wire [31:0] y
@@ -1075,9 +1077,11 @@ module finv(
     wire [7:0] ey;
     assign ey = (eya[8]) ? 8'b0: eya[7:0];
 
-    assign my = (eya[8]) ? 8'b0: mya;
+    wire [22:0] my;
+    assign my = (eya[8]) ? 23'b0: mya;
 
     assign y = {sx,ey,my};
 
 endmodule
 
+`default_nettype wire
