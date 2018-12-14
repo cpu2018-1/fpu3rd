@@ -73,10 +73,11 @@ ctrlを見てレジスタ(32bit×1個)にまとめるぐらいはできるんじ
     assign x1a = {s1a,em1a};
     assign x2a = {s2a,em2a};
 
-    wire [31:0] fle_y,flt_y,feq_y;
-    assign fle_y = (x1a <= x2a);
+    // 以下1bit数で定義しているが例えば{31'b0,flt_y}がfltの32bitの出力である。
+    wire fle_y,flt_y,feq_y;
     assign flt_y = (x1a < x2a);
     assign feq_y = (x1a == x2a);
+    assign fle_y = flt_y | feq_y;
 
 こんな感じで記述できると思う
 
