@@ -25,8 +25,8 @@ module fmul(
     assign eya0 = (x1[30:0] == 31'b0 | x2[30:0] == 31'b0) ? 9'b0: e1 + e2;
     
     wire [9:0] ey0,ey1;
-    assign ey0a = eya0 - 10'd127;
-    assign ey1a = eya0 - 10'd126;
+    assign ey0 = eya0 - 10'd127;
+    assign ey1 = eya0 - 10'd126;
 
     wire [9:0] eya;
     assign eya = (mya[47:47]) ? ey1: ey0;
