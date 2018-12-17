@@ -21,10 +21,9 @@ module fadd(
     assign sm2 = e2 - e1;
     assign sm = (sm1[8]) ? sm2: sm1[7:0];
 
-    wire [7:0] e1a,e2a;
+    wire [7:0] e1a;
     wire [22:0] m1a,m2a;
     assign e1a = (sm1[8]) ? e2: e1;
-    assign e2a = (sm1[8]) ? e1: e2;
     assign m1a = (sm1[8]) ? mx2: mx1;
     assign m2a = (sm1[8]) ? mx1: mx2;
 
