@@ -6,10 +6,10 @@ module fmul(
     wire s1,s2,sy;
     wire [7:0] e1,e2,ey;
     wire [22:0] m1,m2,my;
-    assign s1 = x1[31:31];
+    assign s1 = x1[31];
     assign e1 = x1[30:23];
     assign m1 = x1[22:0];
-    assign s2 = x2[31:31];
+    assign s2 = x2[31];
     assign e2 = x2[30:23];
     assign m2 = x2[22:0];
 

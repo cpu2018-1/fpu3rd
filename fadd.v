@@ -3,13 +3,10 @@ module fadd(
     input wire [31:0] x2,
     output wire [31:0] y);
 
-    wire s1,s2;
     wire [7:0] e1,e2;
     wire [22:0] mx1,mx2;
-    assign s1 = x1[31];
     assign e1 = x1[30:23];
     assign mx1 = x1[22:0];
-    assign s2 = x2[31];
     assign e2 = x2[30:23];
     assign mx2 = x2[22:0];
 
@@ -99,7 +96,6 @@ module fadd(
     // pm : 0のとき +, 1のとき -
     wire pm;
     assign pm = x1[31] ^ x2[31];
-
 
     wire [25:0] mya2;
     assign mya2 = (pm) ? {2'b01,m1a,1'b0} - {1'b0,m2b}: {2'b01,m1a,1'b0} + {1'b0,m2b};
