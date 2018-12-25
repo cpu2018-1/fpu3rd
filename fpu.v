@@ -92,7 +92,7 @@ module fpu(
     assign s1a = (em1_zero) ? 1'b1: ~s1;
     assign em1a = (em1_zero) ? 31'b0: ((s1) ? ~em1: em1);
     assign s2a = (em2_zero) ? 1'b1: ~s2;
-    assign em2a = (em2_zero) ? 1'b1: ((s2) ? ~em2: em2);
+    assign em2a = (em2_zero) ? 31'b0: ((s2) ? ~em2: em2);
 
     wire [31:0] x1a,x2a;
     assign x1a = {s1a,em1a};
